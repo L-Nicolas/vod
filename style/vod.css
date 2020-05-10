@@ -202,7 +202,7 @@ button[type=reset]:hover {
 
 /* Conteneur de chaque formulaire */
 
-#filmRecherche, #supprimerFilm, #filmAjouter, #ajoutFilm, #collectionFilm{
+#filmRecherche, #supprimerFilm, #filmSupprimer, #filmAjouter, #ajoutFilm, #collectionFilm{
   color: white;
   margin: 25px;
   display: flex;

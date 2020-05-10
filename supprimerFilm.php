@@ -12,7 +12,8 @@
             <a href="vod.html" id="logo"><i class="fas fa-video fa-1x"></i>  VOD FR</a>
         </div>
 
-        <h1>Votre film</h1>
+        <div id="filmSupprimer">
+	        <h1>Votre film</h1>
 
 			<?php
 				$lines = file("data/vod.csv");
@@ -28,7 +29,7 @@
 						unset($lines[array_search($line, $lines)]);
 
 						file_put_contents("data/vod.csv", $lines);
-	
+		
 					}
 					if ($titre == true){
 						echo "<h2>à été suprimé</h2>";
@@ -39,5 +40,6 @@
 					echo "<h2>n'existe pas :(</h2";
 				}
 			?>
+		</div>
 	</body>
 </html>	
