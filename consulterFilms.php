@@ -13,43 +13,54 @@
         </div>
 
 	    <div id="collectionFilm">
-
 	        <h1>Notre collection de films</h1>
-	       
+
 	        <?php
-		        if (! file_exists("data/vod.csv")){
-		        	echo "<h2>est vide désole :(</h2>";
-		        }
-		        elseif (file_exists("data/vod.csv")){
-					$lines = file("data/vod.csv");
-					$films = array() ;
-					$i = 0;
+                try
+                {
+                	// On se connecte à MySQL
 
-					echo "<table>
-						    	<tr>
-						    		<th><b>Titre</b></th>
-						    		<th><b>Année</b></th>
-						    		<th><b>Réalisateur</b></th>
-						    	</tr>";
+                	$bdd = new PDO('mysql:host=localhost;dbname=vod;charset=utf8', 'adminvod', 'azerty');
+                }
 
-					foreach($lines as $line){ 
-						$unFilm = explode(":" , $line);
-						$films[$i] = array($unFilm[0],$unFilm[1],$unFilm[2]);
+                catch(Exception $e)
+                {
+                	// En cas d'erreur, on affiche un message et on arrête tout
+                    
+                    die('Erreur : '.$e->getMessage());
+                }
+                
+                echo "<table>
+                                <tr>
+                                    <th><b>Titre</b></th>
+                                    <th><b>Année</b></th>
+                                    <th><b>Réalisateur</b></th>
+                                </tr>";
 
-						echo "<tr>";
-						
-							for($y=0 ; $y < count($films[$i]) ; $y++){
-								echo "<td>" . $films[$i][$y] . "</td>";
-							}
+                // Si tout va bien, on peut continuer
+                // On récupère tout le contenu de la table Film
+                $reponse = $bdd->query('SELECT * FROM Film');
 
-						echo "</tr>";
-						$i++;
+                // On affiche chaque entrée une à une
+
+                while ($donnees = $reponse->fetch())
+
+					{
+                        echo 
+                        '</tr> 
+                        
+							<td>' . $donnees['titre'] . '</td>
+							<td>' . $donnees['annee'] . '</td>
+							<td>' . $donnees['realisateur'] . '</td>
+						</tr>';
+
 					}
-					echo "</table>";
-				}
-			?>
+
+                $reponse->closeCursor(); // Termine le traitement de la requête
+                unset( $bdd ) ;
+                ?>
+
 	    </div>
-
 	</body>
-
 </html>	
+

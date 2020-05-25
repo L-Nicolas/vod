@@ -17,37 +17,59 @@
 		    <h1>Votre film</h1>
 
 			<?php
-				$lines = file("data/vod.csv");
-				$titre = false;
+                try
+                {
+                	// On se connecte à MySQL
 
-				foreach($lines as $line){ 
-					$unFilm = explode(":" , $line);
+                	$bdd = new PDO('mysql:host=localhost;dbname=vod;charset=utf8', 'adminvod', 'azerty');
+                }
 
-					if (strtoupper($unFilm[0]) == strtoupper($_POST['titre'])){
-						echo "<table>
-					    		<tr>
-					    			<th><b>Titre</b></th>
-					    			<th><b>Année</b></th>
-					    			<th><b>Réalisateur</b></th>
-					    		</tr>";
+                catch(Exception $e)
+                {
+                	// En cas d'erreur, on affiche un message et on arrête tout
+                    
+                    die('Erreur : '.$e->getMessage());
+                }
 
-								for($i=0 ; $i < count($unFilm) ; $i++){
-										echo "<tr> 
-												<td>" . $unFilm[0] . "</td>
-												<td>" . $unFilm[1] . "</td>
-												<td>" . $unFilm[2] . "</td>
-											</tr>";
-										break;
-								}
-						echo "</table>";
-						$titre = true;
-						break;
+                // Si tout va bien, on peut continuer
+                // On récupère tout le contenu de la table Film
+				$st = $bdd->prepare('SELECT * FROM Film WHERE titre = :titre');
+				$st->execute(array(':titre' => $_POST['titre']));
+				
+				$nb = $st->rowCount();
+					
+				if($nb == 1){
+				
+					echo "<table>
+                                <tr>
+                                    <th><b>Titre</b></th>
+                                    <th><b>Année</b></th>
+                                    <th><b>Réalisateur</b></th>
+                                </tr>";
+					// On affiche chaque entrée une à une
+	
+					while ($donnees = $st->fetch())
+
+					{
+                        echo 
+                        '</tr> 
+                        
+							<td>' . $donnees['titre'] . '</td>
+							<td>' . $donnees['annee'] . '</td>
+							<td>' . $donnees['realisateur'] . '</td>
+						</tr>';
+
 					}
 				}
-				if (! $titre){
-				echo "<h2>n'existe pas :(</h2";
+				else{
+					echo "<h2>n'existe pas :(</h2>";
 				}
-			?>
+
+                
+                $st->closeCursor(); 
+                $nb->closeCursor(); // Termine le traitement de la requête
+                unset( $bdd ) ;
+                ?>
 			
 		</div>
 
